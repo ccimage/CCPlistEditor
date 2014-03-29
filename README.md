@@ -22,3 +22,6 @@ Alt+T 添加datetome
 只会添加到选中节点的子节点中，如果没有选中，添加到第一层。实际上有一个默认隐藏的根节点的。
 
 有问题或者bug可以联系weibo.com/ccimage
+
+特别感谢
+使用了TreeViewAdv控件，确实比较好用。代码库地址 http://sourceforge.net/projects/treeviewadv/
