@@ -25,5 +25,49 @@ namespace CCPlistEditor
             value_bool = false;
             value_date = DateTime.Now;
         }
+        public void SetNewValue(object oldvalue)
+        {
+            try
+            {
+                switch (nodeType)
+                {
+                    case Constant.NodeTypeDefine.boolean:
+                        value_bool = Convert.ToBoolean(oldvalue);
+                        break;
+                    case Constant.NodeTypeDefine.datetime:
+                        value_date = Convert.ToDateTime(oldvalue);
+                        break;
+                    case Constant.NodeTypeDefine.number:
+                        value_number = Convert.ToDecimal(oldvalue);
+                        break;
+                    case Constant.NodeTypeDefine.text:
+                        value_string = oldvalue.ToString();
+                        break;
+                }
+            }
+            catch
+            {
+                ResetDefaultValue();
+            }
+        }
+        public object GetOldValue()
+        {
+            switch (nodeType)
+            {
+                case Constant.NodeTypeDefine.boolean:
+                    return value_bool;
+                    break;
+                case Constant.NodeTypeDefine.datetime:
+                    return value_date;
+                    break;
+                case Constant.NodeTypeDefine.number:
+                    return value_number;
+                    break;
+                case Constant.NodeTypeDefine.text:
+                    return value_string;
+                    break;
+            }
+            return "";
+        }
     }
 }

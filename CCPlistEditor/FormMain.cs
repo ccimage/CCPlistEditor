@@ -218,6 +218,11 @@ namespace CCPlistEditor
                     return;
             }
         }
+        private void RefreshTreeIcon(Constant.NodeTypeDefine nodeType)
+        {
+            Node nodeSelected = (treeViewAdvControl.SelectedNode.Tag as Node);
+            nodeSelected.Image = imageListToolbar.Images[nodeType.ToString()];
+        }
         #endregion
 
         #region Command Control Events        
@@ -487,10 +492,17 @@ namespace CCPlistEditor
                 ShowErrorMsg("Not any node is selected.");
                 return;
             }
+            Constant.NodeTypeDefine newtype = GetTypeFromName(cmbBoxNodeType.SelectedItem.ToString());
             PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
-            data.nodeType = GetTypeFromName(cmbBoxNodeType.SelectedItem.ToString());
-            data.ResetDefaultValue();
+            if(data.nodeType == newtype)
+            {
+                return;
+            }
+            object oldvalue = data.GetOldValue();
+            data.nodeType = newtype;
+            data.SetNewValue(oldvalue);
             RefreshEditPanel();
+            RefreshTreeIcon(newtype);
         }
         private void txtBoxStringValue_Leave(object sender, EventArgs e)
         {
@@ -815,7 +827,15 @@ namespace CCPlistEditor
         {
             foreach (XElement xe in xelement.Elements())
             {
-                DataParser("item", xe, parent);
+                Node node = DataParser("item", xe, parent);
+                if (xe.Name.LocalName == "dict")
+                {
+                    XElementParser(xe, node);
+                }
+                else if (xe.Name.LocalName == "array")
+                {
+                    ArrayParser(xe, node);
+                }
             }
         }
         private Node DataParser(string key, XElement xe, Node parent = null)
