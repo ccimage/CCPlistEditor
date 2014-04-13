@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CCPlistEditor
 {
-    class PlistNodeData
+    public class PlistNodeData
     {
         public Constant.NodeTypeDefine nodeType { get; set; }
         public string key { get; set; }
@@ -13,7 +13,7 @@ namespace CCPlistEditor
         public decimal value_number { get; set; }
         public bool value_bool { get; set; }
         public DateTime value_date { get; set; }
-
+        public string uniquekey { get; set; }
         public PlistNodeData()
         {
             ResetDefaultValue();
@@ -52,22 +52,35 @@ namespace CCPlistEditor
         }
         public object GetOldValue()
         {
+            object oldval = "";
             switch (nodeType)
             {
                 case Constant.NodeTypeDefine.boolean:
-                    return value_bool;
+                    oldval = value_bool;
                     break;
                 case Constant.NodeTypeDefine.datetime:
-                    return value_date;
+                    oldval = value_date;
                     break;
                 case Constant.NodeTypeDefine.number:
-                    return value_number;
+                    oldval = value_number;
                     break;
                 case Constant.NodeTypeDefine.text:
-                    return value_string;
+                    oldval = value_string;
                     break;
             }
-            return "";
+            return oldval;
+        }
+
+        public PlistNodeData DeepCopy()
+        {
+            PlistNodeData newData = new PlistNodeData();
+            newData.key = this.key;
+            newData.nodeType = this.nodeType;
+            newData.value_bool = this.value_bool;
+            newData.value_date = this.value_date;
+            newData.value_number = this.value_number;
+            newData.value_string = this.value_string;
+            return newData;
         }
     }
 }

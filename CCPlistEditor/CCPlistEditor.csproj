@@ -53,6 +53,7 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClipBoard.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -60,6 +61,7 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlistDataTree.cs" />
     <Compile Include="PlistNode.cs" />
     <Compile Include="PlistNodeData.cs" />
     <Compile Include="Program.cs" />
@@ -98,6 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico" />
+    <None Include="Resources\redo.png" />
+    <None Include="Resources\undo.png" />
+    <None Include="Resources\publish.png" />
     <None Include="Resources\Zhiwu027.jpg" />
   </ItemGroup>
   <ItemGroup>

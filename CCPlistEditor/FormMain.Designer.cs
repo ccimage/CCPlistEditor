@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.treeViewAdvControl = new Aga.Controls.Tree.TreeViewAdv();
+            this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
+            this.nodeTextBox = new Aga.Controls.Tree.NodeControls.NodeTextBox();
             this.panelDateEditor = new System.Windows.Forms.Panel();
             this.timePicker = new System.Windows.Forms.DateTimePicker();
             this.datePicker = new System.Windows.Forms.DateTimePicker();
@@ -63,6 +66,9 @@
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.publishToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.undoToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -82,9 +88,6 @@
             this.labelErrorMsg = new System.Windows.Forms.Label();
             this.timerErrorMsg = new System.Windows.Forms.Timer(this.components);
             this.imageListToolbar = new System.Windows.Forms.ImageList(this.components);
-            this.treeViewAdvControl = new Aga.Controls.Tree.TreeViewAdv();
-            this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
-            this.nodeTextBox = new Aga.Controls.Tree.NodeControls.NodeTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -119,6 +122,48 @@
             this.splitContainer1.Size = new System.Drawing.Size(831, 495);
             this.splitContainer1.SplitterDistance = 202;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // treeViewAdvControl
+            // 
+            this.treeViewAdvControl.AllowDrop = true;
+            this.treeViewAdvControl.AsyncExpanding = true;
+            this.treeViewAdvControl.BackColor = System.Drawing.SystemColors.Window;
+            this.treeViewAdvControl.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.treeViewAdvControl.DefaultToolTipProvider = null;
+            this.treeViewAdvControl.DisplayDraggingNodes = true;
+            this.treeViewAdvControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewAdvControl.DragDropMarkColor = System.Drawing.Color.Black;
+            this.treeViewAdvControl.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.treeViewAdvControl.Location = new System.Drawing.Point(0, 0);
+            this.treeViewAdvControl.Model = null;
+            this.treeViewAdvControl.Name = "treeViewAdvControl";
+            this.treeViewAdvControl.NodeControls.Add(this.nodeIcon);
+            this.treeViewAdvControl.NodeControls.Add(this.nodeTextBox);
+            this.treeViewAdvControl.SelectedNode = null;
+            this.treeViewAdvControl.SelectionMode = Aga.Controls.Tree.TreeSelectionMode.MultiSameParent;
+            this.treeViewAdvControl.ShowNodeToolTips = true;
+            this.treeViewAdvControl.Size = new System.Drawing.Size(202, 495);
+            this.treeViewAdvControl.TabIndex = 1;
+            this.treeViewAdvControl.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeViewAdvControl_ItemDrag);
+            this.treeViewAdvControl.SelectionChanged += new System.EventHandler(this.treeViewAdvControl_SelectionChanged);
+            this.treeViewAdvControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewAdvControl_DragDrop);
+            this.treeViewAdvControl.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewAdvControl_DragOver);
+            // 
+            // nodeIcon
+            // 
+            this.nodeIcon.DataPropertyName = "Image";
+            this.nodeIcon.LeftMargin = 1;
+            this.nodeIcon.ParentColumn = null;
+            this.nodeIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
+            // 
+            // nodeTextBox
+            // 
+            this.nodeTextBox.DataPropertyName = "Text";
+            this.nodeTextBox.EditEnabled = true;
+            this.nodeTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nodeTextBox.IncrementalSearchEnabled = true;
+            this.nodeTextBox.LeftMargin = 3;
+            this.nodeTextBox.ParentColumn = null;
             // 
             // panelDateEditor
             // 
@@ -398,6 +443,9 @@
             this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton,
+            this.publishToolStripButton,
+            this.undoToolStripButton,
+            this.redoToolStripButton,
             this.toolStripSeparator,
             this.cutToolStripButton,
             this.copyToolStripButton,
@@ -443,6 +491,35 @@
             this.saveToolStripButton.Text = "&Save";
             this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripButton_Click);
             // 
+            // publishToolStripButton
+            // 
+            this.publishToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.publishToolStripButton.Image = global::CCPlistEditor.Properties.Resources.publish;
+            this.publishToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.publishToolStripButton.Name = "publishToolStripButton";
+            this.publishToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.publishToolStripButton.Text = "publish";
+            // 
+            // undoToolStripButton
+            // 
+            this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.undoToolStripButton.Image = global::CCPlistEditor.Properties.Resources.undo;
+            this.undoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.undoToolStripButton.Name = "undoToolStripButton";
+            this.undoToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.undoToolStripButton.Text = "undo";
+            this.undoToolStripButton.Click += new System.EventHandler(this.undoToolStripButton_Click);
+            // 
+            // redoToolStripButton
+            // 
+            this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.redoToolStripButton.Image = global::CCPlistEditor.Properties.Resources.redo;
+            this.redoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.redoToolStripButton.Name = "redoToolStripButton";
+            this.redoToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.redoToolStripButton.Text = "redo";
+            this.redoToolStripButton.Click += new System.EventHandler(this.redoToolStripButton_Click);
+            // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
@@ -456,7 +533,7 @@
             this.cutToolStripButton.Name = "cutToolStripButton";
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.cutToolStripButton.Text = "C&ut";
-            this.cutToolStripButton.Visible = false;
+            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
             // copyToolStripButton
             // 
@@ -466,7 +543,7 @@
             this.copyToolStripButton.Name = "copyToolStripButton";
             this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.copyToolStripButton.Text = "&Copy";
-            this.copyToolStripButton.Visible = false;
+            this.copyToolStripButton.Click += new System.EventHandler(this.copyToolStripButton_Click);
             // 
             // pasteToolStripButton
             // 
@@ -476,7 +553,7 @@
             this.pasteToolStripButton.Name = "pasteToolStripButton";
             this.pasteToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.pasteToolStripButton.Text = "&Paste";
-            this.pasteToolStripButton.Visible = false;
+            this.pasteToolStripButton.Click += new System.EventHandler(this.pasteToolStripButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -609,48 +686,6 @@
             this.imageListToolbar.Images.SetKeyName(4, "number");
             this.imageListToolbar.Images.SetKeyName(5, "text");
             // 
-            // treeViewAdvControl
-            // 
-            this.treeViewAdvControl.AllowDrop = true;
-            this.treeViewAdvControl.AsyncExpanding = true;
-            this.treeViewAdvControl.BackColor = System.Drawing.SystemColors.Window;
-            this.treeViewAdvControl.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.treeViewAdvControl.DefaultToolTipProvider = null;
-            this.treeViewAdvControl.DisplayDraggingNodes = true;
-            this.treeViewAdvControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewAdvControl.DragDropMarkColor = System.Drawing.Color.Black;
-            this.treeViewAdvControl.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.treeViewAdvControl.Location = new System.Drawing.Point(0, 0);
-            this.treeViewAdvControl.Model = null;
-            this.treeViewAdvControl.Name = "treeViewAdvControl";
-            this.treeViewAdvControl.NodeControls.Add(this.nodeIcon);
-            this.treeViewAdvControl.NodeControls.Add(this.nodeTextBox);
-            this.treeViewAdvControl.SelectedNode = null;
-            this.treeViewAdvControl.SelectionMode = Aga.Controls.Tree.TreeSelectionMode.MultiSameParent;
-            this.treeViewAdvControl.ShowNodeToolTips = true;
-            this.treeViewAdvControl.Size = new System.Drawing.Size(202, 495);
-            this.treeViewAdvControl.TabIndex = 1;
-            this.treeViewAdvControl.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeViewAdvControl_ItemDrag);
-            this.treeViewAdvControl.SelectionChanged += new System.EventHandler(this.treeViewAdvControl_SelectionChanged);
-            this.treeViewAdvControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewAdvControl_DragDrop);
-            this.treeViewAdvControl.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewAdvControl_DragOver);
-            // 
-            // nodeIcon
-            // 
-            this.nodeIcon.DataPropertyName = "Image";
-            this.nodeIcon.LeftMargin = 1;
-            this.nodeIcon.ParentColumn = null;
-            this.nodeIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
-            // 
-            // nodeTextBox
-            // 
-            this.nodeTextBox.DataPropertyName = "Text";
-            this.nodeTextBox.EditEnabled = true;
-            this.nodeTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nodeTextBox.IncrementalSearchEnabled = true;
-            this.nodeTextBox.LeftMargin = 3;
-            this.nodeTextBox.ParentColumn = null;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -745,6 +780,9 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ImageList imageListToolbar;
+        private System.Windows.Forms.ToolStripButton publishToolStripButton;
+        private System.Windows.Forms.ToolStripButton undoToolStripButton;
+        private System.Windows.Forms.ToolStripButton redoToolStripButton;
 
     }
 }

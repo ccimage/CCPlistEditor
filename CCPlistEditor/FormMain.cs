@@ -306,6 +306,7 @@ namespace CCPlistEditor
             AboutBox about = new AboutBox();
             about.ShowDialog();
         }
+        #region save file
         bool SaveFile()
         {
             toolStrip1.Focus();
@@ -320,7 +321,7 @@ namespace CCPlistEditor
 
                 foreach (TreeNodeAdv nodeadv in treeViewAdvControl.Root.Children)
                 {
-                    FetchNodeData(nodeadv, child);
+                    FetchNodeData(nodeadv, child, false);
                 }
 
                 if (xmldoc.DocumentType != null)
@@ -334,6 +335,141 @@ namespace CCPlistEditor
             }
             return false;
         }
+        void FetchNodeData(TreeNodeAdv parentNode, XElement xmlElm, bool parentIsArray)
+        {
+            PlistNodeData data = GetNodeData(parentNode);
+            if (data == null)
+            {
+                _DataNULLException();
+            }
+
+            if (data.nodeType == Constant.NodeTypeDefine.dict)
+            {
+                XElement dict = AddDictItem(xmlElm, data.key, parentIsArray);
+                foreach (TreeNodeAdv nodeadvchild in parentNode.Children)
+                {
+                    FetchNodeData(nodeadvchild, dict, false);
+                }
+            }
+            else if (data.nodeType == Constant.NodeTypeDefine.array)
+            {
+                XElement array = AddArrayContainerItem(xmlElm, data.key, parentIsArray);
+                foreach (TreeNodeAdv nodeadvchild in parentNode.Children)
+                {
+                    PlistNodeData childdata = GetNodeData(nodeadvchild);
+                    FetchNodeData(nodeadvchild, array, true);
+                }
+            }
+            else if (data.nodeType == Constant.NodeTypeDefine.boolean)
+            {
+                if(!parentIsArray)
+                {
+                    xmlElm.Add(new XElement("key", data.key));
+                }
+                
+                if (data.value_bool)
+                {
+                    xmlElm.Add(new XElement("true"));
+                }
+                else
+                {
+                    xmlElm.Add(new XElement("false"));
+                }
+            }
+            else
+            {
+                AddValueItem(xmlElm, data, parentIsArray);
+            }
+        }
+        bool HaveUnsavedContent()
+        {
+            return haveUnsavedChanges;
+        }
+        bool CloseWithoutSave()
+        {
+            if (HaveUnsavedContent())
+            {
+                System.Windows.Forms.DialogResult res = MessageBox.Show("Do you want to save the file before close it?",
+                "WARNING: File not save", MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning);
+                if (res == System.Windows.Forms.DialogResult.Yes)
+                {
+                    return SaveFile();
+                }
+                else if (res == System.Windows.Forms.DialogResult.No)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+        private void cutToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (treeViewAdvControl.SelectedNode == null)
+            {
+                ShowErrorMsg("nothing selected.");
+                return;
+            }
+
+            CCClipBoard clip = CCClipBoard.SingletonInstance();
+            clip.SaveToPrivateClip(treeViewAdvControl.SelectedNode, null);
+
+            (treeViewAdvControl.SelectedNode.Tag as Node).Parent = null;
+            haveUnsavedChanges = true;
+        }
+
+        private void copyToolStripButton_Click(object sender, EventArgs e)
+        {
+            if(treeViewAdvControl.SelectedNode == null)
+            {
+                ShowErrorMsg("nothing selected.");
+                return;
+            }
+
+            CCClipBoard clip = CCClipBoard.SingletonInstance();
+            clip.SaveToPrivateClip(treeViewAdvControl.SelectedNode, null);
+        }
+
+        private void pasteToolStripButton_Click(object sender, EventArgs e)
+        {
+            CCClipBoard clip = CCClipBoard.SingletonInstance();
+
+            if(treeViewAdvControl.SelectedNode == null)
+            {
+                if(clip.PasteClip(_model, imageListToolbar))
+                {
+                    haveUnsavedChanges = true;
+                }
+                return;
+            }
+            Node parent = treeViewAdvControl.SelectedNode.Tag as Node;
+            PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
+            if (!CheckAddNodePossible(data.nodeType))
+            {
+                ShowErrorMsg("Can not add child node here.");
+                return;
+            }
+
+            if (clip.PasteClip(treeViewAdvControl.SelectedNode, imageListToolbar))
+            {
+                haveUnsavedChanges = true;
+            }
+        }
+
+        private void undoToolStripButton_Click(object sender, EventArgs e)
+        {
+            ShowErrorMsg("function/feature not finished.");
+        }
+
+        private void redoToolStripButton_Click(object sender, EventArgs e)
+        {
+            ShowErrorMsg("function/feature not finished.");
+        }
         #region
         void AddNode(string nodename = "")
         {
@@ -346,7 +482,7 @@ namespace CCPlistEditor
             {
                 Node parent = treeViewAdvControl.SelectedNode.Tag as Node;
                 PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
-                if (!CheckAddNodePossible(data.nodeType, GetTypeFromName(nodename)))
+                if (!CheckAddNodePossible(data.nodeType))
                 {
                     ShowErrorMsg("Can not add child node here.");
                     return;
@@ -362,7 +498,7 @@ namespace CCPlistEditor
             nodeAdded.Image = imageListToolbar.Images[nodedata.nodeType.ToString()];
             haveUnsavedChanges = true;
         }
-        bool CheckAddNodePossible(Constant.NodeTypeDefine selectedType, Constant.NodeTypeDefine newType)
+        bool CheckAddNodePossible(Constant.NodeTypeDefine selectedType)
         {
             if (selectedType == Constant.NodeTypeDefine.dict || selectedType == Constant.NodeTypeDefine.array)
             {
@@ -401,82 +537,6 @@ namespace CCPlistEditor
                     break;
             }
             return nodetype;
-        }
-        void FetchNodeData(TreeNodeAdv parentNode, XElement xmlElm)
-        {
-            PlistNodeData data = GetNodeData(parentNode);
-            if (data == null)
-            {
-                _DataNULLException();
-            }
-
-            if (data.nodeType == Constant.NodeTypeDefine.dict)
-            {
-                XElement dict = AddDictItem(xmlElm, data.key);
-                foreach (TreeNodeAdv nodeadvchild in parentNode.Children)
-                {
-                    FetchNodeData(nodeadvchild, dict);
-                }
-            }
-            else if (data.nodeType == Constant.NodeTypeDefine.array)
-            {
-                XElement array = AddArrayContainerItem(xmlElm, data.key);
-                foreach (TreeNodeAdv nodeadvchild in parentNode.Children)
-                {
-                    PlistNodeData childdata = GetNodeData(nodeadvchild);
-                    if (childdata.nodeType == Constant.NodeTypeDefine.array || childdata.nodeType == Constant.NodeTypeDefine.dict)
-                    {
-                        FetchNodeData(nodeadvchild, array);
-                    }
-                    else
-                    {
-                        AddValueItemSpecial(array, childdata);
-                    }
-
-                }
-            }
-            else if (data.nodeType == Constant.NodeTypeDefine.boolean)
-            {
-                xmlElm.Add(new XElement("key", data.key));
-                if (data.value_bool)
-                {
-                    xmlElm.Add(new XElement("true"));
-                }
-                else
-                {
-                    xmlElm.Add(new XElement("false"));
-                }
-            }
-            else
-            {
-                AddValueItem(xmlElm, data);
-            }
-        }
-        bool HaveUnsavedContent()
-        {
-            return haveUnsavedChanges;
-        }
-        bool CloseWithoutSave()
-        {
-            if (HaveUnsavedContent())
-            {
-                System.Windows.Forms.DialogResult res = MessageBox.Show("Do you want to save the file before close it?",
-                "WARNING: File not save", MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Warning);
-                if ( res == System.Windows.Forms.DialogResult.Yes)
-                {
-                    return SaveFile();
-                }
-                else if(res == System.Windows.Forms.DialogResult.No)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
         }
         #endregion
         #endregion
@@ -713,28 +773,35 @@ namespace CCPlistEditor
         #endregion
 
         #region Read/write xml
-        private XElement AddDictItem(XElement parent, string name)
+        private XElement AddDictItem(XElement parent, string name, bool parentIsArray)
         {
-            parent.Add(new XElement("key", name));
+            if(!parentIsArray)
+            {
+                parent.Add(new XElement("key", name));
+            }
+            
             XElement child = new XElement("dict");
             parent.Add(child);
             return child;
         }
-        private XElement AddArrayContainerItem(XElement parent, string name)
+        private XElement AddArrayContainerItem(XElement parent, string name, bool parentIsArray)
         {
-            parent.Add(new XElement("key", name));
+            if (!parentIsArray)
+            {
+                parent.Add(new XElement("key", name));
+            }
+
             XElement child = new XElement("array");
             parent.Add(child);
             return child;
         }
-        private void AddValueItem(XElement parent, PlistNodeData data)
+        private void AddValueItem(XElement parent, PlistNodeData data, bool parentIsArray)
         {
-            parent.Add(new XElement("key", data.key));
+            if(!parentIsArray)
+            {
+                parent.Add(new XElement("key", data.key));
+            }
 
-            AddValueItemSpecial(parent, data);
-        }
-        private void AddValueItemSpecial(XElement parent, PlistNodeData data)
-        {
             XElement child = new XElement(GetKeyPlainText(data));
             switch (data.nodeType)
             {
@@ -759,6 +826,7 @@ namespace CCPlistEditor
             }
             parent.Add(child);
         }
+ 
         private string GetKeyPlainText(PlistNodeData data)
         {
             if (data.nodeType == Constant.NodeTypeDefine.boolean)
