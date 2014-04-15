@@ -19,6 +19,8 @@ namespace CCPlistEditor
 
         #region settings/temp variants for application
         bool haveUnsavedChanges = false;
+        double version = 1.0;
+        CSetup setupConfig = null;
         #endregion
         public FormMain()
         {
@@ -26,12 +28,26 @@ namespace CCPlistEditor
         }
         private void FormMain_Load(object sender, EventArgs e)
         {
+            #region multilanguage
+            CDefines.AppRootPath = Application.StartupPath;
+            List<LanguageItem> languageList = CDefines.langInst.GetLanguageList();
+            foreach (LanguageItem lanItem in languageList)
+            {
+                ToolStripItem item = languageToolStripButton.DropDownItems.Add(lanItem.text);
+                item.Tag = lanItem.name;
+                item.ToolTipText = lanItem.tooltip;
+                item.Click += new EventHandler(SetLanguageMenuItem_Click);
+            }
+            setupConfig = CSetup.Deserialize(CDefines.ConfigFilePath);
+            SetLanguage(setupConfig.cfguiLanguage);
+            #endregion
             // hide edit panels
             HideEditPanels();
 
             // init tree view control
             InitTreeView();
             RefreshButtonState();
+            txtBoxVersion.Text = "1.0";
         }
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -40,6 +56,25 @@ namespace CCPlistEditor
                 e.Cancel = true;
             }
         }
+        void SetLanguageMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (SetLanguage(menuItem.Tag.ToString()))
+            {
+                foreach (ToolStripItem item in languageToolStripButton.DropDownItems)
+                {
+                    ((ToolStripMenuItem)item).Checked = false;
+                }
+                menuItem.Checked = true;
+                setupConfig.cfguiLanguage = menuItem.Tag.ToString();
+                setupConfig.Serialize(CDefines.ConfigFilePath);
+            }
+        }
+        bool SetLanguage(string language)
+        {
+            return CDefines.SetLanguage(language, this);
+        }
+
         #region TreeView
         void InitTreeView()
         {
@@ -235,6 +270,8 @@ namespace CCPlistEditor
                 _model.Nodes.Clear();
                 treeViewAdvControl.EndUpdate();
                 haveUnsavedChanges = false;
+                version = 1.0;
+                txtBoxVersion.Text = FormatVersion();
             }
         }
         private void addDictionaryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -319,6 +356,9 @@ namespace CCPlistEditor
                 XElement child = new XElement("dict");
                 xmldoc.Root.Add(child);
 
+                child.Add(new XElement("key","version"));
+                child.Add(new XElement("string", FormatVersion()));
+                
                 foreach (TreeNodeAdv nodeadv in treeViewAdvControl.Root.Children)
                 {
                     FetchNodeData(nodeadv, child, false);
@@ -389,8 +429,8 @@ namespace CCPlistEditor
         {
             if (HaveUnsavedContent())
             {
-                System.Windows.Forms.DialogResult res = MessageBox.Show("Do you want to save the file before close it?",
-                "WARNING: File not save", MessageBoxButtons.YesNoCancel,
+                System.Windows.Forms.DialogResult res = MessageBox.Show(CDefines.GetDStr("SaveFileWarning"),
+                CDefines.GetDStr("SaveFileWarningTitle"), MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning);
                 if (res == System.Windows.Forms.DialogResult.Yes)
                 {
@@ -412,7 +452,7 @@ namespace CCPlistEditor
         {
             if (treeViewAdvControl.SelectedNode == null)
             {
-                ShowErrorMsg("nothing selected.");
+                ShowErrorMsg(CDefines.GetDStr("NothingSelected"));
                 return;
             }
 
@@ -427,7 +467,7 @@ namespace CCPlistEditor
         {
             if(treeViewAdvControl.SelectedNode == null)
             {
-                ShowErrorMsg("nothing selected.");
+                ShowErrorMsg(CDefines.GetDStr("NothingSelected"));
                 return;
             }
 
@@ -451,7 +491,7 @@ namespace CCPlistEditor
             PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
             if (!CheckAddNodePossible(data.nodeType))
             {
-                ShowErrorMsg("Can not add child node here.");
+                ShowErrorMsg(CDefines.GetDStr("AddChildFailure"));
                 return;
             }
 
@@ -470,6 +510,14 @@ namespace CCPlistEditor
         {
             ShowErrorMsg("function/feature not finished.");
         }
+        private void publishToolStripButton_Click(object sender, EventArgs e)
+        {
+            version++;
+            if(!SaveFile())
+            {
+                version--;
+            }
+        }
         #region
         void AddNode(string nodename = "")
         {
@@ -484,7 +532,7 @@ namespace CCPlistEditor
                 PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
                 if (!CheckAddNodePossible(data.nodeType))
                 {
-                    ShowErrorMsg("Can not add child node here.");
+                    ShowErrorMsg(CDefines.GetDStr("AddChildFailure"));
                     return;
                 }
                 nodeAdded = AddChild(parent, nodename);
@@ -541,6 +589,23 @@ namespace CCPlistEditor
         #endregion
         #endregion
         #region Editor Panel
+        private void txtBoxVersion_Leave(object sender, EventArgs e)
+        {
+            //float ver = 0;
+            //if(float.TryParse(txtBoxVersion.Text, out ver))
+            //{
+            //    version = ver;
+            //}
+            //else
+            //{
+            //    txtBoxVersion.Text = FormatVersion();
+            //}
+            
+        }
+        private string FormatVersion()
+        {
+            return string.Format("{0:N1}", version);
+        }
         private void btnApplyType_Click(object sender, EventArgs e)
         {
             if (cmbBoxNodeType.SelectedIndex < 0)
@@ -549,7 +614,7 @@ namespace CCPlistEditor
             }
             if (treeViewAdvControl.SelectedNode == null)
             {
-                ShowErrorMsg("Not any node is selected.");
+                ShowErrorMsg(CDefines.GetDStr("NothingSelected"));
                 return;
             }
             Constant.NodeTypeDefine newtype = GetTypeFromName(cmbBoxNodeType.SelectedItem.ToString());
@@ -590,11 +655,11 @@ namespace CCPlistEditor
                 return;
             }
 
-            decimal num = 0;
-            if (!decimal.TryParse(txtBoxNumberValue.Text, out num))
+            double num = 0;
+            if (!double.TryParse(txtBoxNumberValue.Text, out num))
             {
                 txtBoxNumberValue.Text = "0";
-                ShowErrorMsg("It's not a number.");
+                ShowErrorMsg(CDefines.GetDStr("NotNumber"));
                 return;
             }
 
@@ -647,7 +712,7 @@ namespace CCPlistEditor
             if (string.IsNullOrEmpty(txtBox.Text))
             {
                 txtBox.Undo();
-                ShowErrorMsg("Node name can not be null.");
+                ShowErrorMsg(CDefines.GetDStr("NodeNameNullError"));
                 return;
             }
             if (treeViewAdvControl.SelectedNode == null)
@@ -860,6 +925,24 @@ namespace CCPlistEditor
             XElement topdict = xmldoc.Root.Element("dict");
 
             XElementParser(topdict);
+            foreach(Node node in _model.Nodes.ToList())
+            {
+                if (node.Text == "version")
+                {
+                    PlistNodeData data = node.Tag as PlistNodeData;
+                    if (data.nodeType == Constant.NodeTypeDefine.text)
+                    {
+                        version = Convert.ToDouble(data.value_string);
+                        node.Parent = null;
+                    }
+                }
+                else
+                {
+                    version = 0.0;
+                    
+                }
+                txtBoxVersion.Text = txtBoxVersion.Text = FormatVersion();
+            }
         }
         private bool XElementParser(XElement xelement, Node parent = null)
         {
@@ -873,7 +956,7 @@ namespace CCPlistEditor
                 {
                     if (xe.ElementsAfterSelf().Count() <= 0)
                     {
-                        MessageBox.Show("File must be not correct. Please check it.");
+                        MessageBox.Show(CDefines.GetDStr("OpenFileError"));
                         return false;
                     }
                     string key = xe.Value;
@@ -917,7 +1000,7 @@ namespace CCPlistEditor
                     data.value_bool = Convert.ToBoolean(xe.Value);
                     break;
                 case Constant.NodeTypeDefine.number:
-                    data.value_number = Convert.ToDecimal(xe.Value);
+                    data.value_number = Convert.ToDouble(xe.Value);
                     break;
                 case Constant.NodeTypeDefine.text:
                     data.value_string = xe.Value;
@@ -937,7 +1020,7 @@ namespace CCPlistEditor
         #region exceptions
         void _DataNULLException()
         {
-            throw new Exception("UNKOWN EXCEPTION : data is missing in the selected node!");
+            throw new Exception(CDefines.GetDStr("UnknownException"));
         }
         void ShowErrorMsg(string error)
         {

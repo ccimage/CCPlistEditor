@@ -10,7 +10,7 @@ namespace CCPlistEditor
         public Constant.NodeTypeDefine nodeType { get; set; }
         public string key { get; set; }
         public string value_string { get; set; }
-        public decimal value_number { get; set; }
+        public double value_number { get; set; }
         public bool value_bool { get; set; }
         public DateTime value_date { get; set; }
         public string uniquekey { get; set; }
@@ -38,7 +38,7 @@ namespace CCPlistEditor
                         value_date = Convert.ToDateTime(oldvalue);
                         break;
                     case Constant.NodeTypeDefine.number:
-                        value_number = Convert.ToDecimal(oldvalue);
+                        value_number = Convert.ToDouble(oldvalue);
                         break;
                     case Constant.NodeTypeDefine.text:
                         value_string = oldvalue.ToString();

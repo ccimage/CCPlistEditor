@@ -55,12 +55,16 @@
     </Compile>
     <Compile Include="ClipBoard.cs" />
     <Compile Include="Constant.cs" />
+    <Compile Include="CSetup.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Language\CDefines.cs" />
+    <Compile Include="Language\CLanguage.cs" />
+    <Compile Include="Language\Cxml.cs" />
     <Compile Include="PlistDataTree.cs" />
     <Compile Include="PlistNode.cs" />
     <Compile Include="PlistNodeData.cs" />
@@ -100,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico" />
+    <None Include="Resources\world.png" />
     <None Include="Resources\redo.png" />
     <None Include="Resources\undo.png" />
     <None Include="Resources\publish.png" />

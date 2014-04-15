@@ -62,18 +62,25 @@
             this.btnApplyType = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.cmbBoxNodeType = new System.Windows.Forms.ComboBox();
+            this.groupBoxVersionControl = new System.Windows.Forms.GroupBox();
+            this.txtBoxVersion = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.labelErrorMsg = new System.Windows.Forms.Label();
+            this.timerErrorMsg = new System.Windows.Forms.Timer(this.components);
+            this.imageListToolbar = new System.Windows.Forms.ImageList(this.components);
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.publishToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.undoToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.addToolStripButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNumberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,11 +90,8 @@
             this.addArrayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.labelErrorMsg = new System.Windows.Forms.Label();
-            this.timerErrorMsg = new System.Windows.Forms.Timer(this.components);
-            this.imageListToolbar = new System.Windows.Forms.ImageList(this.components);
+            this.languageToolStripButton = new System.Windows.Forms.ToolStripSplitButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -98,6 +102,7 @@
             this.panelNumberEditor.SuspendLayout();
             this.panelStringEditor.SuspendLayout();
             this.groupBoxPublicProperty.SuspendLayout();
+            this.groupBoxVersionControl.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,6 +124,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.panelNumberEditor);
             this.splitContainer1.Panel2.Controls.Add(this.panelStringEditor);
             this.splitContainer1.Panel2.Controls.Add(this.groupBoxPublicProperty);
+            this.splitContainer1.Panel2.Controls.Add(this.groupBoxVersionControl);
             this.splitContainer1.Size = new System.Drawing.Size(831, 495);
             this.splitContainer1.SplitterDistance = 202;
             this.splitContainer1.TabIndex = 1;
@@ -160,7 +166,6 @@
             // 
             this.nodeTextBox.DataPropertyName = "Text";
             this.nodeTextBox.EditEnabled = true;
-            this.nodeTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nodeTextBox.IncrementalSearchEnabled = true;
             this.nodeTextBox.LeftMargin = 3;
             this.nodeTextBox.ParentColumn = null;
@@ -173,7 +178,7 @@
             this.panelDateEditor.Controls.Add(this.label9);
             this.panelDateEditor.Controls.Add(this.label10);
             this.panelDateEditor.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelDateEditor.Location = new System.Drawing.Point(0, 337);
+            this.panelDateEditor.Location = new System.Drawing.Point(0, 398);
             this.panelDateEditor.Name = "panelDateEditor";
             this.panelDateEditor.Size = new System.Drawing.Size(625, 68);
             this.panelDateEditor.TabIndex = 6;
@@ -227,7 +232,7 @@
             this.panelDictEditor.Controls.Add(this.txtBoxDictName);
             this.panelDictEditor.Controls.Add(this.label7);
             this.panelDictEditor.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelDictEditor.Location = new System.Drawing.Point(0, 269);
+            this.panelDictEditor.Location = new System.Drawing.Point(0, 330);
             this.panelDictEditor.Name = "panelDictEditor";
             this.panelDictEditor.Size = new System.Drawing.Size(625, 68);
             this.panelDictEditor.TabIndex = 4;
@@ -255,7 +260,7 @@
             this.panelBoolEditor.Controls.Add(this.label6);
             this.panelBoolEditor.Controls.Add(this.label5);
             this.panelBoolEditor.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelBoolEditor.Location = new System.Drawing.Point(0, 201);
+            this.panelBoolEditor.Location = new System.Drawing.Point(0, 262);
             this.panelBoolEditor.Name = "panelBoolEditor";
             this.panelBoolEditor.Size = new System.Drawing.Size(625, 68);
             this.panelBoolEditor.TabIndex = 3;
@@ -304,7 +309,7 @@
             this.panelNumberEditor.Controls.Add(this.label4);
             this.panelNumberEditor.Controls.Add(this.label3);
             this.panelNumberEditor.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelNumberEditor.Location = new System.Drawing.Point(0, 133);
+            this.panelNumberEditor.Location = new System.Drawing.Point(0, 194);
             this.panelNumberEditor.Name = "panelNumberEditor";
             this.panelNumberEditor.Size = new System.Drawing.Size(625, 68);
             this.panelNumberEditor.TabIndex = 1;
@@ -350,7 +355,7 @@
             this.panelStringEditor.Controls.Add(this.label2);
             this.panelStringEditor.Controls.Add(this.label1);
             this.panelStringEditor.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelStringEditor.Location = new System.Drawing.Point(0, 65);
+            this.panelStringEditor.Location = new System.Drawing.Point(0, 126);
             this.panelStringEditor.Name = "panelStringEditor";
             this.panelStringEditor.Size = new System.Drawing.Size(625, 68);
             this.panelStringEditor.TabIndex = 0;
@@ -395,7 +400,7 @@
             this.groupBoxPublicProperty.Controls.Add(this.label8);
             this.groupBoxPublicProperty.Controls.Add(this.cmbBoxNodeType);
             this.groupBoxPublicProperty.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPublicProperty.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxPublicProperty.Location = new System.Drawing.Point(0, 61);
             this.groupBoxPublicProperty.Name = "groupBoxPublicProperty";
             this.groupBoxPublicProperty.Size = new System.Drawing.Size(625, 65);
             this.groupBoxPublicProperty.TabIndex = 5;
@@ -437,6 +442,36 @@
             this.cmbBoxNodeType.Size = new System.Drawing.Size(102, 24);
             this.cmbBoxNodeType.TabIndex = 0;
             // 
+            // groupBoxVersionControl
+            // 
+            this.groupBoxVersionControl.Controls.Add(this.txtBoxVersion);
+            this.groupBoxVersionControl.Controls.Add(this.label11);
+            this.groupBoxVersionControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxVersionControl.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxVersionControl.Name = "groupBoxVersionControl";
+            this.groupBoxVersionControl.Size = new System.Drawing.Size(625, 61);
+            this.groupBoxVersionControl.TabIndex = 7;
+            this.groupBoxVersionControl.TabStop = false;
+            this.groupBoxVersionControl.Text = "Version";
+            // 
+            // txtBoxVersion
+            // 
+            this.txtBoxVersion.Location = new System.Drawing.Point(85, 23);
+            this.txtBoxVersion.Name = "txtBoxVersion";
+            this.txtBoxVersion.ReadOnly = true;
+            this.txtBoxVersion.Size = new System.Drawing.Size(172, 22);
+            this.txtBoxVersion.TabIndex = 3;
+            this.txtBoxVersion.Leave += new System.EventHandler(this.txtBoxVersion_Leave);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(18, 26);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(54, 16);
+            this.label11.TabIndex = 1;
+            this.label11.Text = "Version";
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -454,12 +489,56 @@
             this.addToolStripButton,
             this.deleteToolStripButton,
             this.toolStripSeparator1,
+            this.languageToolStripButton,
             this.helpToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(831, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // labelErrorMsg
+            // 
+            this.labelErrorMsg.BackColor = System.Drawing.SystemColors.Info;
+            this.labelErrorMsg.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.labelErrorMsg.ForeColor = System.Drawing.Color.Red;
+            this.labelErrorMsg.Location = new System.Drawing.Point(0, 520);
+            this.labelErrorMsg.Name = "labelErrorMsg";
+            this.labelErrorMsg.Size = new System.Drawing.Size(831, 37);
+            this.labelErrorMsg.TabIndex = 2;
+            this.labelErrorMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelErrorMsg.Visible = false;
+            // 
+            // timerErrorMsg
+            // 
+            this.timerErrorMsg.Interval = 3000;
+            this.timerErrorMsg.Tick += new System.EventHandler(this.timerErrorMsg_Tick);
+            // 
+            // imageListToolbar
+            // 
+            this.imageListToolbar.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListToolbar.ImageStream")));
+            this.imageListToolbar.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListToolbar.Images.SetKeyName(0, "dict");
+            this.imageListToolbar.Images.SetKeyName(1, "array");
+            this.imageListToolbar.Images.SetKeyName(2, "boolean");
+            this.imageListToolbar.Images.SetKeyName(3, "datetime");
+            this.imageListToolbar.Images.SetKeyName(4, "number");
+            this.imageListToolbar.Images.SetKeyName(5, "text");
             // 
             // newToolStripButton
             // 
@@ -499,6 +578,7 @@
             this.publishToolStripButton.Name = "publishToolStripButton";
             this.publishToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.publishToolStripButton.Text = "publish";
+            this.publishToolStripButton.Click += new System.EventHandler(this.publishToolStripButton_Click);
             // 
             // undoToolStripButton
             // 
@@ -508,6 +588,7 @@
             this.undoToolStripButton.Name = "undoToolStripButton";
             this.undoToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.undoToolStripButton.Text = "undo";
+            this.undoToolStripButton.Visible = false;
             this.undoToolStripButton.Click += new System.EventHandler(this.undoToolStripButton_Click);
             // 
             // redoToolStripButton
@@ -518,12 +599,8 @@
             this.redoToolStripButton.Name = "redoToolStripButton";
             this.redoToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.redoToolStripButton.Text = "redo";
+            this.redoToolStripButton.Visible = false;
             this.redoToolStripButton.Click += new System.EventHandler(this.redoToolStripButton_Click);
-            // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // cutToolStripButton
             // 
@@ -554,11 +631,6 @@
             this.pasteToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.pasteToolStripButton.Text = "&Paste";
             this.pasteToolStripButton.Click += new System.EventHandler(this.pasteToolStripButton_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // addToolStripButton
             // 
@@ -642,11 +714,6 @@
             this.deleteToolStripButton.Text = "Delete";
             this.deleteToolStripButton.Click += new System.EventHandler(this.deleteToolStripButton_Click);
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
             // helpToolStripButton
             // 
             this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -657,34 +724,14 @@
             this.helpToolStripButton.Text = "He&lp";
             this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
             // 
-            // labelErrorMsg
+            // languageToolStripButton
             // 
-            this.labelErrorMsg.BackColor = System.Drawing.SystemColors.Info;
-            this.labelErrorMsg.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.labelErrorMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelErrorMsg.ForeColor = System.Drawing.Color.Red;
-            this.labelErrorMsg.Location = new System.Drawing.Point(0, 520);
-            this.labelErrorMsg.Name = "labelErrorMsg";
-            this.labelErrorMsg.Size = new System.Drawing.Size(831, 37);
-            this.labelErrorMsg.TabIndex = 2;
-            this.labelErrorMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelErrorMsg.Visible = false;
-            // 
-            // timerErrorMsg
-            // 
-            this.timerErrorMsg.Interval = 3000;
-            this.timerErrorMsg.Tick += new System.EventHandler(this.timerErrorMsg_Tick);
-            // 
-            // imageListToolbar
-            // 
-            this.imageListToolbar.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListToolbar.ImageStream")));
-            this.imageListToolbar.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListToolbar.Images.SetKeyName(0, "dict");
-            this.imageListToolbar.Images.SetKeyName(1, "array");
-            this.imageListToolbar.Images.SetKeyName(2, "boolean");
-            this.imageListToolbar.Images.SetKeyName(3, "datetime");
-            this.imageListToolbar.Images.SetKeyName(4, "number");
-            this.imageListToolbar.Images.SetKeyName(5, "text");
+            this.languageToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.languageToolStripButton.Image = global::CCPlistEditor.Properties.Resources.world;
+            this.languageToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.languageToolStripButton.Name = "languageToolStripButton";
+            this.languageToolStripButton.Size = new System.Drawing.Size(32, 22);
+            this.languageToolStripButton.Text = "language";
             // 
             // FormMain
             // 
@@ -716,6 +763,8 @@
             this.panelStringEditor.PerformLayout();
             this.groupBoxPublicProperty.ResumeLayout(false);
             this.groupBoxPublicProperty.PerformLayout();
+            this.groupBoxVersionControl.ResumeLayout(false);
+            this.groupBoxVersionControl.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -783,6 +832,10 @@
         private System.Windows.Forms.ToolStripButton publishToolStripButton;
         private System.Windows.Forms.ToolStripButton undoToolStripButton;
         private System.Windows.Forms.ToolStripButton redoToolStripButton;
+        private System.Windows.Forms.GroupBox groupBoxVersionControl;
+        private System.Windows.Forms.TextBox txtBoxVersion;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ToolStripSplitButton languageToolStripButton;
 
     }
 }
