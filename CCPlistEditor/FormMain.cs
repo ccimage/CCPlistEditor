@@ -197,6 +197,7 @@ namespace CCPlistEditor
                 case Constant.NodeTypeDefine.dict:
                     panelDictEditor.Visible = true;
                     txtBoxDictName.Text = data.key;
+                    txtBoxDictName.Enabled = !isArray;
                     break;
                 case Constant.NodeTypeDefine.datetime:
                     panelDateEditor.Visible = true;
@@ -357,7 +358,7 @@ namespace CCPlistEditor
                 xmldoc.Root.Add(child);
 
                 child.Add(new XElement("key","version"));
-                child.Add(new XElement("string", FormatVersion()));
+                child.Add(new XElement("real", FormatVersion()));
                 
                 foreach (TreeNodeAdv nodeadv in treeViewAdvControl.Root.Children)
                 {
@@ -762,21 +763,30 @@ namespace CCPlistEditor
             Node dropNode = _tree.DropPosition.Node.Tag as Node;
             if (_tree.DropPosition.Position == NodePosition.Inside)
             {
-                foreach (TreeNodeAdv n in nodes)
+                Constant.NodeTypeDefine nodetype = (dropNode.Tag as PlistNodeData).nodeType;
+                if(nodetype == Constant.NodeTypeDefine.array
+                    || nodetype == Constant.NodeTypeDefine.dict)
                 {
-                    (n.Tag as Node).Parent = dropNode;
+                    foreach (TreeNodeAdv n in nodes)
+                    {
+                        (n.Tag as Node).Parent = dropNode;
+                    }
+                    _tree.DropPosition.Node.IsExpanded = true;
                 }
-                _tree.DropPosition.Node.IsExpanded = true;
             }
             else
             {
                 Node parent = dropNode.Parent;
                 Node nextItem = dropNode;
                 if (_tree.DropPosition.Position == NodePosition.After)
+                {
                     nextItem = dropNode.NextNode;
+                }
 
                 foreach (TreeNodeAdv node in nodes)
+                {
                     (node.Tag as Node).Parent = null;
+                }
 
                 int index = -1;
                 index = parent.Nodes.IndexOf(nextItem);
@@ -935,11 +945,11 @@ namespace CCPlistEditor
                         version = Convert.ToDouble(data.value_string);
                         node.Parent = null;
                     }
-                }
-                else
-                {
-                    version = 0.0;
-                    
+                    else if (data.nodeType == Constant.NodeTypeDefine.number)
+                    {
+                        version = Convert.ToDouble(data.value_number);
+                        node.Parent = null;
+                    }
                 }
                 txtBoxVersion.Text = txtBoxVersion.Text = FormatVersion();
             }
