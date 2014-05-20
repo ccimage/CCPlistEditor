@@ -511,6 +511,82 @@ namespace CCPlistEditor
         {
             ShowErrorMsg("function/feature not finished.");
         }
+
+        private void importToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (treeViewAdvControl.SelectedNode == null)
+            {
+                ImportCSV(null, Constant.NodeTypeDefine.dict);
+                return;
+            }
+
+            Node parent = treeViewAdvControl.SelectedNode.Tag as Node;
+            PlistNodeData data = GetNodeData(treeViewAdvControl.SelectedNode);
+            if (!CheckAddNodePossible(data.nodeType))
+            {
+                ShowErrorMsg(CDefines.GetDStr("AddChildFailure"));
+                return;
+            }
+            ImportCSV(parent, data.nodeType);           
+        }
+        private void ImportCSV(Node parent, Constant.NodeTypeDefine parenttype)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "(CSV 逗号分隔文件)|*.csv";
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                CsvLib.CsvStreamReader csvreader = new CsvLib.CsvStreamReader(dlg.FileName,Encoding.UTF8);
+                if (parent == null)
+                {
+                    ImportCSVAsDict(csvreader);
+                    return;
+                }
+                if (parenttype == Constant.NodeTypeDefine.array)
+                {
+                    ImportCSVAsArray(csvreader, parent);
+                }
+                else if (parenttype == Constant.NodeTypeDefine.dict)
+                {
+                    ImportCSVAsDict(csvreader);
+                }
+            }
+        }
+        private void ImportCSVAsArray(CsvLib.CsvStreamReader csvreader, Node parent)
+        {
+            for (int i = 2; i <= csvreader.RowCount; i++)
+            {
+                if (csvreader.ColCount > 1)
+                {
+                    Node newNode = AddNode();
+                    for (int j = 1; j <= csvreader.ColCount; j++)
+                    {
+                        AddNodeAndValue(newNode, csvreader[1, j], csvreader[i, j]);
+                    }
+                }
+                else
+                {
+                    AddNodeAndValue(parent, csvreader[1, 1], csvreader[i, 1]);
+                }
+
+            }
+        }
+        private void ImportCSVAsDict(CsvLib.CsvStreamReader csvreader)
+        {
+            for (int i = 2; i <= csvreader.RowCount; i++)
+            {
+                if (csvreader.ColCount > 1)
+                {
+                    Node newNode = AddNode("dict");
+                    PlistNodeData data = newNode.Tag as PlistNodeData; 
+                    data.key = csvreader[i, 1];
+                    newNode.Text = data.key;
+                    for (int j = 2; j <= csvreader.ColCount; j++)
+                    {
+                        AddNodeAndValue(newNode, csvreader[1, j], csvreader[i, j]);
+                    }
+                }
+            }
+        }
         private void publishToolStripButton_Click(object sender, EventArgs e)
         {
             version++;
@@ -520,7 +596,7 @@ namespace CCPlistEditor
             }
         }
         #region
-        void AddNode(string nodename = "")
+        Node AddNode(string nodename = "")
         {
             if (string.IsNullOrEmpty(nodename))
             {
@@ -534,9 +610,13 @@ namespace CCPlistEditor
                 if (!CheckAddNodePossible(data.nodeType))
                 {
                     ShowErrorMsg(CDefines.GetDStr("AddChildFailure"));
-                    return;
+                    return null;
                 }
                 nodeAdded = AddChild(parent, nodename);
+                if (data.nodeType == Constant.NodeTypeDefine.array)
+                {
+                    nodeAdded.Text = "item";
+                }
             }
             else
             {
@@ -546,6 +626,57 @@ namespace CCPlistEditor
             nodeAdded.Tag = nodedata;
             nodeAdded.Image = imageListToolbar.Images[nodedata.nodeType.ToString()];
             haveUnsavedChanges = true;
+            return nodeAdded;
+        }
+        Node AddNodeAndValue(Node parent, string nodename, object nodevalue)
+        {
+            if (string.IsNullOrEmpty(nodename))
+            {
+                new Exception("node name can not be empty!");
+            }
+            Node nodeAdded = null;
+            if (parent != null)
+            {
+                PlistNodeData data = parent.Tag as PlistNodeData;
+                if (!CheckAddNodePossible(data.nodeType))
+                {
+                    ShowErrorMsg(CDefines.GetDStr("AddChildFailure"));
+                    return null;
+                }
+                nodeAdded = AddChild(parent, nodename);
+            }
+            else
+            {
+                nodeAdded = AddRoot(nodename);
+            }
+           
+            Constant.NodeTypeDefine itemtype = GetItemTypeByValue(nodevalue);
+            PlistNodeData nodedata = InitNodeData(itemtype, nodename);
+            nodedata.SetNewValue(nodevalue);
+            nodeAdded.Tag = nodedata;
+            nodeAdded.Image = imageListToolbar.Images[nodedata.nodeType.ToString()];
+            haveUnsavedChanges = true;
+            return nodeAdded;
+        }
+        private Constant.NodeTypeDefine GetItemTypeByValue(object value)
+        {
+            double d;
+            int i;
+            if(int.TryParse(value.ToString() ,out i) || double.TryParse(value.ToString(), out d))
+            {
+                return Constant.NodeTypeDefine.number;
+            }
+            bool b;
+            if (bool.TryParse(value.ToString(), out b))
+            {
+                return Constant.NodeTypeDefine.boolean;
+            }
+            DateTime t;
+            if (DateTime.TryParse(value.ToString(), out t))
+            {
+                return Constant.NodeTypeDefine.datetime;
+            }
+            return Constant.NodeTypeDefine.text;
         }
         bool CheckAddNodePossible(Constant.NodeTypeDefine selectedType)
         {
@@ -1040,5 +1171,75 @@ namespace CCPlistEditor
             timerErrorMsg.Enabled = true;
         }
         #endregion 
+        #region Context menu
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            cutToolStripButton_Click(sender, null);
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            copyToolStripButton_Click(sender, null);
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pasteToolStripButton_Click(sender, null);
+        }
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            importToolStripButton_Click(sender, null);
+        }
+        #endregion
+        #region 快捷键设置
+        private void FormMain_Activated(object sender, EventArgs e)
+        {
+            BindHotKey.RegisterHotKey(Handle, 111, BindHotKey.KeyModifiers.Ctrl, (uint)Keys.X);
+            BindHotKey.RegisterHotKey(Handle, 112, BindHotKey.KeyModifiers.Ctrl, (uint)Keys.C);
+            BindHotKey.RegisterHotKey(Handle, 113, BindHotKey.KeyModifiers.Ctrl, (uint)Keys.V);
+            BindHotKey.RegisterHotKey(Handle, 114, BindHotKey.KeyModifiers.None, (uint)Keys.Delete);
+        }
+
+        private void FormMain_Deactivate(object sender, EventArgs e)
+        {
+            BindHotKey.UnregisterHotKey(Handle, 111);
+            BindHotKey.UnregisterHotKey(Handle, 112);
+            BindHotKey.UnregisterHotKey(Handle, 113);
+            BindHotKey.UnregisterHotKey(Handle, 114);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_HOTKEY = 0x0312;
+            //按快捷键   
+            if (m.Msg == WM_HOTKEY)
+            {
+                int keyDefine = m.WParam.ToInt32();
+                switch (keyDefine)
+                {
+                    case 111:
+                        cutToolStripButton_Click(null, null);
+                        break;
+                    case 112:
+                        copyToolStripButton_Click(null, null);
+                        break;
+                    case 113:
+                        pasteToolStripButton_Click(null, null);
+                        break;
+                    case 114:
+                        deleteToolStripButton_Click(null, null);
+                        break;
+                }
+
+            }
+
+            base.WndProc(ref m);
+        }
+        #endregion
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            CDefines.SetContextMenuLanguage(this.Name, contextMenuStrip1);
+        }
     }
 }

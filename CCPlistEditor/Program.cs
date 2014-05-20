@@ -24,6 +24,7 @@ namespace CCPlistEditor
             frmLan.Name = frm.Name;
             frmLan.Controls = language.GetAllControls(frm, null);
             frmLan.Toolbars = language.GetToolStripItems(frm, "toolStrip1");
+            frmLan.Menus = language.GetMenuItems((frm as FormMain).contextMenuStrip1);
             language.Forms.Add(frmLan);
             LanguageForm frmLan2 = new LanguageForm();
             //FormAbout

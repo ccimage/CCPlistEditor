@@ -53,9 +53,12 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="BindHotKey.cs" />
     <Compile Include="ClipBoard.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="CSetup.cs" />
+    <Compile Include="CSV\CSVReader.cs" />
+    <Compile Include="CSV\CSVWriter.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,18 +100,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\image17.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\image30.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="app.ico" />
+    <Content Include="Resources\aboutbanner.jpg" />
+    <Content Include="Resources\addbutton.png" />
+    <Content Include="Resources\deletebutton.png" />
+    <None Include="Resources\import.png" />
     <None Include="Resources\world.png" />
     <None Include="Resources\redo.png" />
     <None Include="Resources\undo.png" />
     <None Include="Resources\publish.png" />
-    <None Include="Resources\Zhiwu027.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aga.Controls\Aga.Controls.csproj">

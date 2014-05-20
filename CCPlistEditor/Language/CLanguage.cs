@@ -82,8 +82,11 @@ namespace CCPlistEditor
         public List<LanguageItem> GetMenuItems(MenuStrip menu)
         {
             List<LanguageItem> list = new List<LanguageItem>();
-            foreach (ToolStripMenuItem item in menu.Items)
+            foreach (ToolStripItem toolitem in menu.Items)
             {
+                if (toolitem.GetType() == typeof(ToolStripSeparator))
+                    continue;
+                ToolStripMenuItem item = (ToolStripMenuItem)toolitem;
                 list.Add(GetLItem(item.Name, item.Text, item.ToolTipText));
                 GetSubMenuitems(list, item);
             }
@@ -97,8 +100,11 @@ namespace CCPlistEditor
         public List<LanguageItem> GetMenuItems(ContextMenuStrip menu)
         {
             List<LanguageItem> list = new List<LanguageItem>();
-            foreach (ToolStripMenuItem item in menu.Items)
+            foreach (ToolStripItem toolitem in menu.Items)
             {
+                if (toolitem.GetType() == typeof(ToolStripSeparator))
+                    continue;
+                ToolStripMenuItem item = (ToolStripMenuItem)toolitem;
                 list.Add(GetLItem(item.Name, item.Text, item.ToolTipText));
                 GetSubMenuitems(list, item);
             }
@@ -258,7 +264,8 @@ namespace CCPlistEditor
                 }
             }
             return string.Format(strError, language);
-        }
+        }        
+        #endregion
         #region XML的序列化和反序列化
 
         /// <summary>
@@ -346,7 +353,7 @@ namespace CCPlistEditor
         }
 
         #endregion
-        #endregion
+
         public void TransForm(Form frm, string menu = null, string[] listview = null)
         {
             LanguageForm frmLan = new LanguageForm();

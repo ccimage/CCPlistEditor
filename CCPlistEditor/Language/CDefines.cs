@@ -88,6 +88,34 @@ namespace CCPlistEditor
             }
             
         }
+        public static void SetContextMenuLanguage(string frmName,ContextMenuStrip menu)
+        {
+            foreach (ToolStripItem toolitem in menu.Items)
+            {
+                if (toolitem.GetType() == typeof(ToolStripSeparator))
+                    continue;
+                ToolStripMenuItem item = (ToolStripMenuItem)toolitem;
+                if (item == null)
+                    continue;
+                foreach (LanguageForm langForm in CDefines.langInst.Forms)
+                {
+                    if (langForm.Name != frmName)
+                    {
+                        continue;
+                    }
+                    foreach (LanguageItem langitem in langForm.Menus)
+                    {
+                        if (langitem.name == item.Name)
+                        {
+                            item.Text = langitem.text;
+                            item.ToolTipText = langitem.tooltip;
+                        }
+                    }
+                }
+
+            }
+
+        }
         /// <summary>
         /// 获得动态字符串
         /// </summary>
@@ -126,8 +154,9 @@ namespace CCPlistEditor
         }
         private static void ChangeMenu(string id, string value, string tooltip, Form frm)
         {
-            if (frm.MainMenuStrip == null)
+           if (frm.MainMenuStrip == null)
                 return;
+
             ToolStripItem[] menuItems = frm.MainMenuStrip.Items.Find(id, true);
             if (menuItems != null && menuItems.Length > 0)
             {
@@ -136,6 +165,7 @@ namespace CCPlistEditor
 
             }
         }
+
         private static void ChangeToolbar(string id, string value,string tooltip, Form frm)
         {
             foreach (Control ctrl in frm.Controls)
