@@ -535,7 +535,7 @@ namespace CCPlistEditor
             dlg.Filter = "(CSV 逗号分隔文件)|*.csv";
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                CsvLib.CsvStreamReader csvreader = new CsvLib.CsvStreamReader(dlg.FileName,Encoding.UTF8);
+                CsvLib.CsvStreamReader csvreader = new CsvLib.CsvStreamReader(dlg.FileName,Encoding.Default);
                 if (parent == null)
                 {
                     ImportCSVAsDict(csvreader);
@@ -1134,11 +1134,16 @@ namespace CCPlistEditor
         {
             Node nodeAdded = parent == null ? AddRoot(key) : AddChild(parent, key);
             Constant.NodeTypeDefine nodetype = GetTypeFromName(xe.Name.LocalName);
+            string temp = xe.Name.LocalName.ToLower();
+            if (temp == "true" || temp == "false")
+            {
+                nodetype = Constant.NodeTypeDefine.boolean;
+            }
             PlistNodeData data = InitNodeData(nodetype, key);
             switch (nodetype)
             {
                 case Constant.NodeTypeDefine.boolean:
-                    data.value_bool = Convert.ToBoolean(xe.Value);
+                    data.value_bool = Convert.ToBoolean(xe.Name.LocalName);
                     break;
                 case Constant.NodeTypeDefine.number:
                     data.value_number = Convert.ToDouble(xe.Value);
