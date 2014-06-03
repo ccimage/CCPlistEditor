@@ -1,7 +1,7 @@
-CCPlistEditor
-=============
+CCPlistEditor (plist 编辑器Windows版)
+======================================
 
-Edit plist file on windows (with .net framework4.0)
+Plist Editor For Windows (with .net framework4.0)
 ---------------------------------------------------
 
 plist文件在ios和mac开发中用的很多，在xcode中编辑也很方便。但是如果同一个团队有人使用windows又是负责提供配置参数的比较麻烦，找了一圈也没有很好的编辑工具。所以就只能自己动手。  
