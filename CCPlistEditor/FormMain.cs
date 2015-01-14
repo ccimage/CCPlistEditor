@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -267,6 +268,7 @@ namespace CCPlistEditor
         {
             if (CloseWithoutSave())
             {
+                Text = "new file";
                 treeViewAdvControl.BeginUpdate();
                 _model.Nodes.Clear();
                 treeViewAdvControl.EndUpdate();
@@ -328,6 +330,7 @@ namespace CCPlistEditor
             dlg.Filter = "(plist file *.plist)|*.plist";
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Text = dlg.FileName;
                 treeViewAdvControl.BeginUpdate();
                 _model.Nodes.Clear();
                 XDocument xmldoc = XDocument.Load(dlg.FileName);
@@ -351,6 +354,7 @@ namespace CCPlistEditor
 
             SaveFileDialog dlg = new SaveFileDialog();
             dlg.Filter = "(plist file *.plist)|*.plist";
+            dlg.FileName = Path.GetFileName(this.Text);
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 XDocument xmldoc = XDocument.Load(Application.StartupPath + "\\empty.plist");
