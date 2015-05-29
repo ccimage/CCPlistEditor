@@ -533,6 +533,11 @@ namespace CCPlistEditor
             }
             ImportCSV(parent, data.nodeType);           
         }
+
+        private void exportToolStripButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("等待实现...");
+        }
         private void ImportCSV(Node parent, Constant.NodeTypeDefine parenttype)
         {
             OpenFileDialog dlg = new OpenFileDialog();

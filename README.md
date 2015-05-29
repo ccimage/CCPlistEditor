@@ -13,7 +13,11 @@ plist文件在ios和mac开发中用的很多，在xcode中编辑也很方便。�
 Free for all!
 1.3支持导入CSV文件，支持导入字典和数组内容，当CSV文件有多列时，如果导入前选择的父节点是Dict，则以字典导入；如选择的是Array，以数组导入。单列的CSV只能导入到Array下。比如equipment.csv文件。id,value,desc三个列，作为dict导入时每行生成一个dict节点（id），挂两个子节点（value，desc）。 作为array导入时每行生成一个节点（该节点是dict类型），带三个子节点。
 
-###使用方法：  
+###运行或者编译
+解压Debug.zip，里面的CCPlistEditor.exe可以直接运行。 将加压后的文件都放到/bin/Debug下再开始编译。
+
+###软件使用方法：  
+
 Alt+A 添加array   
 Alt+B 添加bool  
 Alt+D 添加dictionary  
